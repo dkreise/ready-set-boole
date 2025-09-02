@@ -9,6 +9,7 @@ int main() {
     tests::test_multiplier();
     tests::test_gray_code();
     tests::test_eval_formula();
+    tests::test_truth_table();
 
     return 0;
 }

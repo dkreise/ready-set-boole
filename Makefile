@@ -3,7 +3,7 @@ NAME = ready_set_boole
 #########
 RM = rm -f
 CC = c++
-CFLAGS = -Werror -Wextra -Wall -std=c++98 
+CFLAGS = -Werror -Wextra -Wall
 #########
 
 #########
