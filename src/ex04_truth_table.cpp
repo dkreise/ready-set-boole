@@ -7,9 +7,9 @@
 #include <unordered_set>
 
 namespace {
-    std::vector<char> extract_variables(const std::string& input) {
+    std::vector<char> extract_variables(const std::string& formula) {
         std::unordered_set<char> var_set;
-        for (char c : input) {
+        for (char c : formula) {
             if (c >= 'A' && c <= 'Z') {
                 var_set.insert(c);
             }
@@ -40,9 +40,9 @@ namespace {
         std::cout << " " << (result ? "1" : "0") << " |" << std::endl;
     }
 
-    std::string get_new_formula(const std::string& input, std::vector<char>& vars, std::vector<int>& values) {
+    std::string get_new_formula(const std::string& formula, std::vector<char>& vars, std::vector<int>& values) {
         std::string new_formula;
-        for (char c : input) {
+        for (char c : formula) {
             if (c >= 'A' && c <= 'Z') {
                 int idx = std::find(vars.begin(), vars.end(), c) - vars.begin();
                 new_formula += (values[idx] ? '1' : '0');
@@ -63,10 +63,10 @@ namespace {
 }
 
 namespace rsb {
-    void print_truth_table(const std::string& input) {
-        std::cout << "Truth Table for: " << input << std::endl << std::endl;
+    void print_truth_table(const std::string& formula) {
+        std::cout << "Truth Table for: " << formula << std::endl << std::endl;
 
-        std::vector<char> vars = extract_variables(input);
+        std::vector<char> vars = extract_variables(formula);
         int n = vars.size();
 
         print_table_header(vars, n);
@@ -79,7 +79,7 @@ namespace rsb {
             }
         
 
-            std::string new_formula = get_new_formula(input, vars, values);
+            std::string new_formula = get_new_formula(formula, vars, values);
 
             // Evaluate the new formula
             bool result = eval_formula(new_formula);

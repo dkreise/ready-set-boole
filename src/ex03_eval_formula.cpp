@@ -44,7 +44,7 @@ namespace {
         }
     }
 
-    void print_test(std::string formula) {
+    void print_test(const std::string& formula) {
         try {
             bool result = rsb::eval_formula(formula);
             std::cout << "Formula: " << formula << " \t Result: ";
@@ -60,12 +60,12 @@ namespace {
 }
 
 namespace rsb {
-    bool eval_formula(std::string input) {
+    bool eval_formula(const std::string& formula) {
         std::stack<bool> st;
-        int len = input.length();
+        int len = formula.length();
 
         for (int i = 0; i < len; i++) {
-            char ch = input[i];
+            char ch = formula[i];
             SymbolType type = get_symbol_type(ch);
 
             switch (type) {
