@@ -1,9 +1,9 @@
 #include "../inc/rsb.hpp"
-#include "../inc/symbols.hpp"
+#include "../inc/tests.hpp"
 #include "../inc/Node.hpp"
+#include "../inc/symbols.hpp"
 
 #include <iostream>
-#include <string>
 #include <stack>
 
 namespace {
@@ -69,58 +69,44 @@ namespace {
         return nodes.top();
     }
 
-    Node* toNNF(Node* root) {
+    Node* toCNF(Node* root) {
         if (!root) {
             return nullptr;
         }
 
         switch (root->value) {
             case '&':
-                return new Node('&', toNNF(root->left), toNNF(root->right));
-            case '|':
-                return new Node('|', toNNF(root->left), toNNF(root->right));
-            case '!': {
-                Node* child = toNNF(root->left);
-                switch (child->value) {
-                    case '!':
-                        return child->left;
-                    case '&':
-                        return new Node('|', toNNF(new Node('!', child->left)), toNNF(new Node('!', child->right)));
-                    case '|':
-                        return new Node('&', toNNF(new Node('!', child->left)), toNNF(new Node('!', child->right)));
-                    default: // variable
-                        return new Node('!', child);
+                return new Node('&', toCNF(root->left), toCNF(root->right));
+            case '|': {
+                Node* left = toCNF(root->left);
+                Node* right = toCNF(root->right);
+                if (left->value == '&') {
+                    // (A & B) | C = (A | C) & (B | C)
+                    Node* newLeft = toCNF(new Node('|', left->left, right));
+                    Node* newRight = toCNF(new Node('|', left->right, right));
+                    return new Node('&', newLeft, newRight);
                 }
-            }
-            case '^': {
-                Node* left = new Node('&', toNNF(root->left), toNNF(new Node('!', root->right)));
-                Node* right = new Node('&', toNNF(new Node('!', root->left)), toNNF(root->right));
+                if (right->value == '&') {
+                    // A | (B & C) = (A | B) & (A | C)
+                    Node* newLeft = toCNF(new Node('|', left, right->left));
+                    Node* newRight = toCNF(new Node('|', left, right->right));
+                    return new Node('&', newLeft, newRight);
+                }
                 return new Node('|', left, right);
             }
-            case '>':
-                return new Node('|', toNNF(new Node('!', root->left)), toNNF(root->right));
-            case '=': {
-                Node* left = toNNF(new Node('>', root->left, root->right));
-                Node* right = toNNF(new Node('>', root->right, root->left));
-                return new Node('&', left, right);
-            }
-            default: // variable
+            default: // variable or !
                 return root;
         }
-        return root;
     }
 }
 
 namespace rsb {
-    std::string negation_normal_form(const std::string& formula) {
-        Node* root = buildTreeFromPRN(formula);
-        // root->printTree();
-        root = toNNF(root);
-        // root->printTree();
-        // root->printRPN();
-        // std::cout << std::endl;
-        std::string res = root->getRPN();
-        std::cout << "Formula: " << formula << "   ->   " << res << std::endl;
-        return res;
+    std::string conjunctive_normal_form(const std::string& formula) {
+        std::string nnf = rsb::negation_normal_form(formula);
+        Node* root = buildTreeFromPRN(nnf);
+        root = toCNF(root);
+        std::string rpn = root->getRPN();
+        std::cout << "Formula: " << formula << "   ->   " << rpn << std::endl;
+        return rpn;
     }
 }

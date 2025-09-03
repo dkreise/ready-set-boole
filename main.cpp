@@ -11,10 +11,22 @@ int main() {
     tests::test_eval_formula();
     tests::test_truth_table();
 
+    std::cout << "NNF" << std::endl;
     rsb::negation_normal_form("PQ>!R|");
     rsb::negation_normal_form("AB&!");
     rsb::negation_normal_form("AB|!");
     rsb::negation_normal_form("P!QR!&=P>");
+
+    std::cout << std::endl << "CNF" << std::endl;
+    rsb::conjunctive_normal_form("PQ>!R|");
+    rsb::conjunctive_normal_form("AB&!");
+    rsb::conjunctive_normal_form("AB|!");
+    rsb::conjunctive_normal_form("AB|C&");
+    rsb::conjunctive_normal_form("AB|C|D|");
+    rsb::conjunctive_normal_form("AB&C&D&");
+    rsb::conjunctive_normal_form("AB&!C!|");
+    rsb::conjunctive_normal_form("AB|!C!&");
+    rsb::conjunctive_normal_form("P!QR!&=P>");
 
     return 0;
 }

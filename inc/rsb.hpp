@@ -9,4 +9,5 @@ namespace rsb {
     bool eval_formula(const std::string& formula);
     void print_truth_table(const std::string& formula);
     std::string negation_normal_form(const std::string& formula);
+    std::string conjunctive_normal_form(const std::string& formula);
 } 

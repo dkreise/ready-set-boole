@@ -42,4 +42,16 @@ class Node {
             }
             std::cout << value;
         }
+
+        std::string getRPN() {
+            std::string rpn;
+            if (left) {
+                rpn += left->getRPN();
+            }
+            if (right) {
+                rpn += right->getRPN();
+            }
+            rpn += value;
+            return rpn;
+        }
 };
