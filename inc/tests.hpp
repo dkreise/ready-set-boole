@@ -8,4 +8,5 @@ namespace tests {
     void test_truth_table();
 
     void test_sat();
+    void test_powerset();
 } 

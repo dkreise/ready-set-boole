@@ -1,6 +1,8 @@
 #pragma once
 
+#include <iostream>
 #include <string>
+#include <vector>
 
 namespace rsb {
     unsigned int adder(unsigned int a, unsigned int b);
@@ -11,4 +13,5 @@ namespace rsb {
     std::string negation_normal_form(const std::string& formula);
     std::string conjunctive_normal_form(const std::string& formula);
     bool sat(const std::string& formula);
+    std::vector<std::vector<int>> powerset(const std::vector<int>& set);
 } 

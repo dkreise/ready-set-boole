@@ -29,6 +29,7 @@ int main() {
     rsb::conjunctive_normal_form("P!QR!&=P>");
 
     tests::test_sat();
+    tests::test_powerset();
 
     return 0;
 }
