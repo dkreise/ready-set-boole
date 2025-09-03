@@ -9,4 +9,5 @@ namespace tests {
 
     void test_sat();
     void test_powerset();
+    void test_eval_set();
 } 
