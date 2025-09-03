@@ -28,5 +28,7 @@ int main() {
     rsb::conjunctive_normal_form("AB|!C!&");
     rsb::conjunctive_normal_form("P!QR!&=P>");
 
+    tests::test_sat();
+
     return 0;
 }

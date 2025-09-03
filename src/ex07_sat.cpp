@@ -1,4 +1,5 @@
 #include "../inc/rsb.hpp"
+#include "../inc/tests.hpp"
 
 #include <iostream>
 #include <string>
@@ -17,27 +18,6 @@ namespace {
         std::vector<char> variables(var_set.begin(), var_set.end());
         std::sort(variables.begin(), variables.end());
         return variables;
-    }
-
-    void print_table_header(std::vector<char>& vars, int n) {
-        std::cout << "|";
-        for (char v : vars) {
-            std::cout << " " << v << " |";
-        }
-        std::cout << " = |" << std::endl;
-        std::cout << "|";
-        for (int i = 0; i < n; i++) {
-            std::cout << "---|";
-        }
-        std::cout << "---|" << std::endl;
-    }
-
-    void print_table_row(std::vector<int> values, bool result) {
-        std::cout << "|";
-        for (int v : values) {
-            std::cout << " " << v << " |";
-        }
-        std::cout << " " << (result ? "1" : "0") << " |" << std::endl;
     }
 
     std::string get_new_formula(const std::string& formula, std::vector<char>& vars, std::vector<int>& values) {
@@ -63,45 +43,44 @@ namespace {
         bool result = rsb::eval_formula(new_formula);
         return result;
     }
-
-    void print_test(const std::string& formula) {
-        try {
-            rsb::print_truth_table(formula);
-        } catch (const std::invalid_argument& e) {
-            std::cout << "Formula: " << formula << " \t " << e.what() << std::endl;
-        }
-    }
 }
 
 namespace rsb {
-    void print_truth_table(const std::string& formula) {
-        std::cout << "Truth Table for: " << formula << std::endl << std::endl;
-
+    bool sat(const std::string& formula) {
         std::vector<char> vars = extract_variables(formula);
         int n = vars.size();
-
-        print_table_header(vars, n);
 
         int num_combinations = 1 << n;  // 2^n 
         for (int mask = 0; mask < num_combinations; mask++) {
             std::vector<int> values(n);
             bool result = evaluate_row(mask, formula, vars, values);
-            print_table_row(values, result);
+            if (result) {
+                return true;
+            }
         }
-        std::cout << std::endl;
+        return false;
     }
 }
 
 namespace tests {
-    void test_truth_table() {
-        std::cout << std::endl << "----- 04 TRUTH TABLE -----" << std::endl;
+    void test_sat() {
+        std::cout << std::endl << "----- 07 SAT -----" << std::endl;
 
-        print_test("AB&");
-        print_test("AB|");
-        print_test("AB^");
-        print_test("A!");
-        print_test("AB>");
-        print_test("AB&C|");
-        print_test("DS|KD>&R!^");
+        std::vector<std::string> formulas = {
+            "AB&",
+            "AB|",
+            "AA!&",
+            "AA^",
+            "AB^",
+            "A!",
+            "AB>",
+            "AB&C|",
+            "DS|KD>&R!^"
+        };
+
+        for (const auto& formula : formulas) {
+            bool result = rsb::sat(formula);
+            std::cout << "Formula: " << formula << " \t SAT: " << (result ? "True" : "False") << std::endl;
+        }
     }
 }

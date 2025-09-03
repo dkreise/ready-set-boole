@@ -10,4 +10,5 @@ namespace rsb {
     void print_truth_table(const std::string& formula);
     std::string negation_normal_form(const std::string& formula);
     std::string conjunctive_normal_form(const std::string& formula);
+    bool sat(const std::string& formula);
 } 

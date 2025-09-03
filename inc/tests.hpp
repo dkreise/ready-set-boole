@@ -6,4 +6,6 @@ namespace tests {
     void test_gray_code();
     void test_eval_formula();
     void test_truth_table();
+
+    void test_sat();
 } 
