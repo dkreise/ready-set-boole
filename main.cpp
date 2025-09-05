@@ -32,7 +32,7 @@ int main() {
     tests::test_powerset();
     tests::test_eval_set();
     tests::test_map();
-    // tests::test_reverse_map();
+    tests::test_reverse_map();
 
     return 0;
 }

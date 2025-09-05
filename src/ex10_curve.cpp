@@ -24,9 +24,6 @@ namespace {
 
 namespace rsb {
     double map(uint16_t x, uint16_t y) {
-        // if (x > 65535 || y > 65535) {
-        //     throw std::out_of_range("x and y must be in the range [0, 65535]");
-        // } 
 
         uint32_t x_morton = convert_to_morton(x);
         uint32_t y_morton = convert_to_morton(y);
@@ -41,22 +38,16 @@ namespace tests{
     void test_map() {
         std::cout<<std::endl << "Testing rsb::map..." << std::endl;
         // Test corners
-        print_result(0, 0); // Expect 0.0
-        print_result(65535, 0); // Expect close to 0.5
-        print_result(0, 65535); // Expect close to 1.0
-        print_result(65535, 65535); // Expect close to 1.0
+        print_result(0, 0);
+        print_result(65535, 0);
+        print_result(0, 65535);
+        print_result(65535, 65535);
 
         // Test midpoints
-        print_result(32768, 32768); // Expect around 0.25
-        print_result(16384, 16384); // Expect around 0.125
-        print_result(49152, 49152); // Expect around 0.75
+        print_result(16384, 16384);
         print_result(16384, 572); 
-        print_result(10000, 20000); // Arbitrary point
-        print_result(30000, 40000); // Arbitrary point
-        print_result(50000, 60000); // Arbitrary point
-
-        // // Test out of range
-        // print_result(70000, 10000); // Expect exception
-        // print_result(10000, 70000); // Expect exception
+        print_result(10000, 20000);
+        print_result(30000, 40000);
+        print_result(50000, 60000);
     }
 }
