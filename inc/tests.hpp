@@ -10,4 +10,6 @@ namespace tests {
     void test_sat();
     void test_powerset();
     void test_eval_set();
+    void test_map();
+    void test_reverse_map();
 } 
