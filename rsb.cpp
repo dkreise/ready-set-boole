@@ -146,7 +146,6 @@ namespace rsb {
         root = toNNF(root);
 
         std::string res = root->getRPN();
-        std::cout << "Formula: " << formula << "   ->   " << res << std::endl;
         return res;
     }
 
@@ -186,8 +185,8 @@ namespace rsb {
         std::string nnf = rsb::negation_normal_form(formula);
         Node* root = buildTreeFromPRN(nnf);
         root = toCNF(root);
+        
         std::string rpn = root->getRPN();
-        std::cout << "Formula: " << formula << "   ->   " << rpn << std::endl;
         return rpn;
     }
 
