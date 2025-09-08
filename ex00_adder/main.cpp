@@ -15,5 +15,6 @@ int main() {
     check_adder(13, 8);
     check_adder(42, 119);
     
+    std::cout << std::endl;
     return 0;
 }
