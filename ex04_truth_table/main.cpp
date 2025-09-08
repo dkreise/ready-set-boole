@@ -1,9 +1,5 @@
 #include "../rsb.hpp"
 
-void print_test(const std::string& formula) {
-    
-}
-
 int main() {
     std::cout << std::endl << "----- 04 TRUTH TABLE -----" << std::endl << std::endl;
 
