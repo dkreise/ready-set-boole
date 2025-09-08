@@ -1,19 +1,5 @@
 #include "../rsb.hpp"
 
-void print_test(const std::string& formula) {
-    try {
-        bool result = rsb::eval_formula(formula);
-        std::cout << "Formula: " << formula << " \t Result: ";
-        if (result) {
-            std::cout << "True" << std::endl;
-        } else {
-            std::cout << "False" << std::endl;
-        }
-    } catch (const std::invalid_argument& e) {
-        std::cout << "Formula: " << formula << " \t " << e.what() << std::endl;
-    }
-}
-
 int main() {
     std::cout << std::endl << "----- 04 EVAL FORMULA -----" << std::endl << std::endl;
 
@@ -44,8 +30,6 @@ int main() {
         }  catch (const std::invalid_argument& e) {
             std::cout << std::left << std::setw(40) << e.what() << std::endl;
         }
-        
-        
     }
     
     std::cout << std::endl;
