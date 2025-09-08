@@ -17,7 +17,7 @@ int main() {
     };
 
     std::cout << std::left << std::setw(20) << "Formula";
-    std::cout << std::left << std::setw(40) << "CNF" << std::endl;
+    std::cout << std::left << std::setw(40) << "SAT" << std::endl;
     std::cout << std::string(60, '-') << std::endl;
 
     for (const auto& formula : formulas) {
