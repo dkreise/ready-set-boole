@@ -1,4 +1,4 @@
-#include "../rsb.hpp"
+#include "../../rsb.hpp"
 
 int main() {
     std::cout << std::endl << "----- 07 SAT -----" << std::endl << std::endl;

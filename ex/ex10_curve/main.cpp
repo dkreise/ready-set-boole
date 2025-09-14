@@ -1,4 +1,4 @@
-#include "../rsb.hpp"
+#include "../../rsb.hpp"
 
 void print_result(uint16_t x, uint16_t y) {
     try {

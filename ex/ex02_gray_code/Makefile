@@ -7,7 +7,7 @@ CFLAGS = -Werror -Wextra -Wall -std=c++17
 #########
 
 #########
-FILES = main ../rsb
+FILES = main ../../rsb
 SRC = $(addsuffix .cpp, $(FILES))
 
 OBJ = $(SRC:.cpp=.o)

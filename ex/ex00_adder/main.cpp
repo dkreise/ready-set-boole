@@ -1,4 +1,4 @@
-#include "../rsb.hpp"
+#include "../../rsb.hpp"
 
 void check_adder(unsigned int a, unsigned int b) {
     unsigned int result = rsb::adder(a, b);

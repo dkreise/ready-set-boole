@@ -1,4 +1,4 @@
-#include "../rsb.hpp"
+#include "../../rsb.hpp"
 
 void print_powerset(const std::vector<std::vector<int>>& powerset) {
     std::cout << "[ ";

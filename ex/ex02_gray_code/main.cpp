@@ -1,4 +1,4 @@
-#include "../rsb.hpp"
+#include "../../rsb.hpp"
 
 void check_gray_code(unsigned int n, unsigned int expected) {
     unsigned int result = rsb::gray_code(n);
