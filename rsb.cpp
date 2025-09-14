@@ -231,7 +231,11 @@ namespace rsb {
     std::vector<int> eval_set(const std::string& formula, const std::vector<std::vector<int>> sets) {
         std::vector<int> universe;
         for (const auto& s : sets) {
-            universe.insert(universe.end(), s.begin(), s.end());
+            for (int elem : s) {
+                if (std::find(universe.begin(), universe.end(), elem) == universe.end()) {
+                    universe.push_back(elem);
+                }
+            }
         }
 
         std::stack<std::vector<int>> st;
