@@ -1,18 +1,29 @@
 #pragma once
 
 #include <iostream>
+#include <memory>
 
 class Node {
     public:
         char value;
-        Node* left;
-        Node* right;
+        std::unique_ptr<Node> left;
+        std::unique_ptr<Node> right;
 
-        Node(char val, Node* l = nullptr, Node* r = nullptr) : value(val), left(l), right(r) {}
+        Node(char v) : value(v), left(nullptr), right(nullptr) {}
+        Node(char v, std::unique_ptr<Node> l) : value(v), left(std::move(l)), right(nullptr) {}
+        Node(char v, std::unique_ptr<Node> l, std::unique_ptr<Node> r)
+            : value(v), left(std::move(l)), right(std::move(r)) {}
 
-        ~Node() {
-            delete left;
-            delete right;
+        // ~Node() {
+        //     delete left;
+        //     delete right;
+        // }
+
+        std::unique_ptr<Node> clone() const {
+            auto newNode = std::make_unique<Node>(value);
+            if (left) newNode->left = left->clone();
+            if (right) newNode->right = right->clone();
+            return newNode;
         }
 
         void printTree(int space = 0) {

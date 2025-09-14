@@ -13,6 +13,7 @@
 #include <limits>
 #include <unordered_set>
 #include <iomanip>
+#include <memory>
 
 enum SymbolType {
     BOOL,
@@ -48,9 +49,9 @@ namespace rsb {
     std::string get_new_formula(const std::string& formula, std::vector<char>& vars, std::vector<int>& values);
     bool evaluate_row(int mask, const std::string& formula, std::vector<char>& vars, std::vector<int>& values);
 
-    Node* buildTreeFromPRN(const std::string& formula);
-    Node* toNNF(Node* root);
-    Node* toCNF(Node* root);
+    std::unique_ptr<Node> buildTreeFromPRN(const std::string& formula);
+    std::unique_ptr<Node> toNNF(std::unique_ptr<Node> root);
+    std::unique_ptr<Node> toCNF(std::unique_ptr<Node> root);
 
     std::vector<int> set_union(const std::vector<int>& a, const std::vector<int>& b);
     std::vector<int> set_intersection(const std::vector<int>& a, const std::vector<int>& b);

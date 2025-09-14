@@ -100,93 +100,127 @@ namespace rsb {
 
     /*** EX 05 ***/
 
-    Node* toNNF(Node* root) {
+    std::unique_ptr<Node> toNNF(std::unique_ptr<Node> root) {
         if (!root) {
             return nullptr;
         }
 
         switch (root->value) {
             case '&':
-                return new Node('&', toNNF(root->left), toNNF(root->right));
+                return std::make_unique<Node>('&', toNNF(std::move(root->left)), toNNF(std::move(root->right)));
             case '|':
-                return new Node('|', toNNF(root->left), toNNF(root->right));
+                return std::make_unique<Node>('|', toNNF(std::move(root->left)), toNNF(std::move(root->right)));
             case '!': {
-                Node* child = toNNF(root->left);
-                switch (child->value) {
-                    case '!':
-                        return child->left;
-                    case '&':
-                        return new Node('|', toNNF(new Node('!', child->left)), toNNF(new Node('!', child->right)));
-                    case '|':
-                        return new Node('&', toNNF(new Node('!', child->left)), toNNF(new Node('!', child->right)));
-                    default: // variable
-                        return new Node('!', child);
+                auto child = toNNF(std::move(root->left));
+                if (child->value == '!') {
+                    // !!A => A
+                    return std::move(child->left);
+                } else if (child->value == '&') {
+                    // De Morgan: !(A & B) => !A | !B
+                    auto left = std::make_unique<Node>('!', std::move(child->left));
+                    auto right = std::make_unique<Node>('!', std::move(child->right));
+                    return toNNF(std::make_unique<Node>('|', std::move(left), std::move(right)));
+                } else if (child->value == '|') {
+                    // De Morgan: !(A | B) => !A & !B
+                    auto left = std::make_unique<Node>('!', std::move(child->left));
+                    auto right = std::make_unique<Node>('!', std::move(child->right));
+                    return toNNF(std::make_unique<Node>('&', std::move(left), std::move(right)));
+                } else {
+                    // variable
+                    return std::make_unique<Node>('!', std::move(child));
                 }
             }
             case '^': {
-                Node* left = new Node('&', toNNF(root->left), toNNF(new Node('!', root->right)));
-                Node* right = new Node('&', toNNF(new Node('!', root->left)), toNNF(root->right));
-                return new Node('|', left, right);
+                auto leftClone = root->left->clone(); 
+                auto rightClone = root->right->clone();
+                auto left = std::make_unique<Node>(
+                    '&', 
+                    toNNF(std::move(leftClone)), 
+                    toNNF(std::make_unique<Node>('!', std::move(rightClone)))
+                );
+                auto right = std::make_unique<Node>(
+                    '&', 
+                    toNNF(std::make_unique<Node>('!', std::move(root->left))), 
+                    toNNF(std::move(root->right))
+                );
+                return std::make_unique<Node>('|', std::move(left), std::move(right));
             }
             case '>':
-                return new Node('|', toNNF(new Node('!', root->left)), toNNF(root->right));
+                return std::make_unique<Node>('|', toNNF(std::make_unique<Node>('!', std::move(root->left))), toNNF(std::move(root->right)));
             case '=': {
-                Node* left = toNNF(new Node('>', root->left, root->right));
-                Node* right = toNNF(new Node('>', root->right, root->left));
-                return new Node('&', left, right);
+                auto leftClone = root->left->clone(); 
+                auto rightClone = root->right->clone();
+                auto left = toNNF(std::make_unique<Node>(
+                    '>', 
+                    std::move(leftClone), 
+                    std::move(rightClone))
+                );
+                auto right = toNNF(std::make_unique<Node>(
+                    '>', 
+                    std::move(root->right), 
+                    std::move(root->left))
+                );
+                return std::make_unique<Node>('&', std::move(left), std::move(right));
             }
             default: // variable
-                return root;
+                return std::make_unique<Node>(root->value);
         }
-        return root;
+        return std::make_unique<Node>(root->value);
     }
 
     std::string negation_normal_form(const std::string& formula) {
-        Node* root = buildTreeFromPRN(formula);
-        root = toNNF(root);
+        auto root = buildTreeFromPRN(formula);
+        auto nnfRoot = toNNF(std::move(root));
 
-        std::string res = root->getRPN();
+        std::string res = nnfRoot->getRPN();
+        // delete root;
+        // delete nnfRoot;
         return res;
     }
 
     /*** EX 06 ***/
 
-    Node* toCNF(Node* root) {
+    std::unique_ptr<Node> toCNF(std::unique_ptr<Node> root) {
         if (!root) {
             return nullptr;
         }
 
         switch (root->value) {
             case '&':
-                return new Node('&', toCNF(root->left), toCNF(root->right));
+                return std::make_unique<Node>('&', toCNF(std::move(root->left)), toCNF(std::move(root->right)));
             case '|': {
-                Node* left = toCNF(root->left);
-                Node* right = toCNF(root->right);
+                auto left = toCNF(std::move(root->left));
+                auto right = toCNF(std::move(root->right));
                 if (left->value == '&') {
                     // (A & B) | C = (A | C) & (B | C)
-                    Node* newLeft = toCNF(new Node('|', left->left, right));
-                    Node* newRight = toCNF(new Node('|', left->right, right));
-                    return new Node('&', newLeft, newRight);
+                    auto rightClone = right->clone();
+                    auto newLeft = toCNF(std::make_unique<Node>('|', std::move(left->left), std::move(rightClone)));
+                    auto newRight = toCNF(std::make_unique<Node>('|', std::move(left->right), std::move(right)));
+                    return std::make_unique<Node>('&', std::move(newLeft), std::move(newRight));
                 }
                 if (right->value == '&') {
                     // A | (B & C) = (A | B) & (A | C)
-                    Node* newLeft = toCNF(new Node('|', left, right->left));
-                    Node* newRight = toCNF(new Node('|', left, right->right));
-                    return new Node('&', newLeft, newRight);
+                    auto leftClone = left->clone();
+                    auto newLeft = toCNF(std::make_unique<Node>('|', std::move(leftClone), std::move(right->left)));
+                    auto newRight = toCNF(std::make_unique<Node>('|', std::move(left), std::move(right->right)));
+                    return std::make_unique<Node>('&', std::move(newLeft), std::move(newRight));
                 }
-                return new Node('|', left, right);
+                return std::make_unique<Node>('|', std::move(left), std::move(right));
             }
+            case '!':
+                return std::make_unique<Node>('!', toCNF(std::move(root->left)));
             default: // variable or !
-                return root;
+                return std::make_unique<Node>(root->value);
         }
     }
 
     std::string conjunctive_normal_form(const std::string& formula) {
         std::string nnf = rsb::negation_normal_form(formula);
-        Node* root = buildTreeFromPRN(nnf);
-        root = toCNF(root);
+        auto root = buildTreeFromPRN(nnf);
+        auto cnfRoot = toCNF(std::move(root));
         
-        std::string rpn = root->getRPN();
+        std::string rpn = cnfRoot->getRPN();
+        // delete root;
         return rpn;
     }
 
@@ -406,23 +440,23 @@ namespace rsb {
         return result;
     }
 
-    Node* buildTreeFromPRN(const std::string& formula) {
-        std::stack<Node*> nodes;
+    std::unique_ptr<Node> buildTreeFromPRN(const std::string& formula) {
+        std::stack<std::unique_ptr<Node>> nodes;
         for (size_t i = 0; i < formula.length(); i++) {
             char c = formula[i];
             SymbolType type = get_symbol_type(c);
             switch (type) {
                 case VARIABLE:
-                    nodes.push(new Node(c));
+                    nodes.push(std::make_unique<Node>(c)); // same as nodes.push(new Node(c))
                     break;
                 case UNARY_OPERATOR:
                     if (nodes.empty()) {
                         throw std::invalid_argument("Error: Invalid formula. Not enough characters for unary operation.");
                     }
                     {
-                        Node* operand = nodes.top();
+                        std::unique_ptr<Node> operand = std::move(nodes.top());
                         nodes.pop();
-                        nodes.push(new Node(c, operand));
+                        nodes.push(std::make_unique<Node>(c, std::move(operand)));
                     }
                     break; 
                 case BINARY_OPERATOR:
@@ -430,11 +464,11 @@ namespace rsb {
                         throw std::invalid_argument("Error: Invalid formula. Not enough characters for binary operation.");
                     }
                     {
-                        Node* right = nodes.top();
+                        std::unique_ptr<Node> right = std::move(nodes.top());
                         nodes.pop();
-                        Node* left = nodes.top();
+                        std::unique_ptr<Node> left = std::move(nodes.top());
                         nodes.pop();
-                        nodes.push(new Node(c, left, right));
+                        nodes.push(std::make_unique<Node>(c, std::move(left), std::move(right)));
                     }
                     break;
                 default:
@@ -444,7 +478,7 @@ namespace rsb {
         if (nodes.size() != 1) {
             throw std::invalid_argument("Error: Invalid formula. Not unique value in the end.");
         }
-        return nodes.top();
+        return std::move(nodes.top());
     }
 
     // a U b
