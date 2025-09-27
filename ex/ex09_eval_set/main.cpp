@@ -65,6 +65,35 @@ int main() {
     };
 
     print_test(sets, formulas);
+
+    sets = {
+        {0, 1, 2},
+        {0, 3, 4}
+    };
+    formulas = {
+        "AB&"
+    };
+
+    print_test(sets, formulas);
+
+    sets = {
+        {0, 1, 2},
+        {3, 4, 5}
+    };
+    formulas = {
+        "AB|"
+    };
+
+    print_test(sets, formulas);
+
+    sets = {
+        {0, 1, 2}
+    };
+    formulas = {
+        "A!"
+    };
+
+    print_test(sets, formulas);
     
     std::cout << std::endl;
     return 0;

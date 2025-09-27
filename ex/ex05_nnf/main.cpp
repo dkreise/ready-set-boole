@@ -4,13 +4,16 @@ int main() {
     std::cout << std::endl << "----- 05 NNF -----" << std::endl << std::endl;
 
     std::vector<std::string> formulas = {
+        "AB&!",
+        "AB|!",
+        "AB>",
+        "AB=",
+        "AB|C&!",
         "AB&",
         "AB|",
         "AA!&",
         "PQ>!R|",
         "AB^",
-        "AB&!",
-        "AB|!",
         "AB&C|",
         "AB|C&",
         "AB|C|D|",
@@ -18,7 +21,8 @@ int main() {
         "AB&!C!|",
         "AB|!C!&",
         "P!QR!&=P>",
-        "DS|KD>&R!^"
+        "DS|KD>&R!^",
+        "ABC"
     };
 
     std::cout << std::left << std::setw(20) << "Formula";

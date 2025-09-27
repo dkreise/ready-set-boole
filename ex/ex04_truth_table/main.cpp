@@ -11,6 +11,8 @@ int main() {
         "AB>",
         "AB&C|",
         "DS|KD>&R!^",
+        "AB&A!B!&|",
+        "A!B|B!A|&",
         "ABC&"
     };
 

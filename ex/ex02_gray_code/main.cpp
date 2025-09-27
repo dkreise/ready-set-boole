@@ -17,6 +17,7 @@ int main() {
     check_gray_code(6, 5);
     check_gray_code(7, 4);
     check_gray_code(8, 12);
+    check_gray_code(11, 14);
 
     std::cout << std::endl;
     return 0;
